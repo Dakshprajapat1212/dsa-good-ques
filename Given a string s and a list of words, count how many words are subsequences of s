@@ -1,0 +1,38 @@
+#include <iostream>
+#include <vector>
+#include <string>
+#include <unordered_map>
+#include <queue>
+
+using namespace std;
+
+int numMatchingSubseq(string s, vector<string>& words) {
+    unordered_map<char, queue<pair<string, int>>> waiting;
+
+    // Step 1: Put all words in map based on their first char
+    for (auto& word : words) {
+        waiting[word[0]].push({word, 0});
+    }
+
+    int count = 0;
+
+    // Step 2: Process each character in main string 's'
+    for (char c : s) {
+        auto& q = waiting[c];
+        int size = q.size();
+
+        while (size--) {
+            auto [word, idx] = q.front();
+            q.pop();
+            idx++;
+
+            if (idx == word.length()) {
+                count++;
+            } else {
+                waiting[word[idx]].push({word, idx});
+            }
+        }
+    }
+
+    return count;
+}
